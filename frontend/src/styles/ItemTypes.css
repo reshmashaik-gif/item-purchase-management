@@ -1,0 +1,36 @@
+.container {
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  display: block;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 300px;
+  border-radius: 7px;
+  border: 1px solid black;
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 7px;
+  border: 1px solid black;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 10px;
+  text-align: left;
+}

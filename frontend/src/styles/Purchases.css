@@ -1,0 +1,41 @@
+.container {
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  margin: 0;
+  display: block;
+  background-color: #eef2f7;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #1e3a5f;
+  color: white;
+}
+
+button {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 7px;
+  border: 1px solid #1e3a5f;
+  color: white;
+  background-color: #1e3a5f;
+}
+
+button:hover {
+  background-color: #2f5d8a;
+}
