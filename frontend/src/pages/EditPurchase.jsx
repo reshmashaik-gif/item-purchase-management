@@ -57,72 +57,48 @@ const EditPurchase = () => {
         getItems();
         getPurchase();
     }, [id]);
+
 function changeQuantity(itemId, quantity) {
-    const value = Number(quantity);
-
-    const selectedItem = items.find(
-        (item) => item.id === itemId
+    setPurchaseItems((prevItems) =>
+        prevItems.map((item) =>
+            item.item_id === itemId
+                ? {
+                    ...item,
+                    quantity: quantity
+                }
+                : item
+        )
     );
-
-    const oldItem = purchaseItems.find(
-        (item) => item.item_id === itemId
-    );
-
-    if (!selectedItem || !oldItem) {
-        return;
-    }
-
-    if (value <= 0) {
-        alert("Quantity must be greater than 0");
-        return;
-    }
-
-    const availableStock = selectedItem.stock_available + oldItem.quantity;
-
-    if (value > availableStock) {
-        alert(
-            `Quantity cannot be greater than available stock: ${availableStock}`
-        );
-        return;
-    }
-
-    const updatedItems = purchaseItems.map((item) => {
-        if (item.item_id === itemId) {
-            return {
-                ...item,
-                quantity: value
-            };
-        }
-
-        return item;
-    });
-
-    setPurchaseItems(updatedItems);
 }
 
-    function handleSubmit(e) {
-        e.preventDefault();
 
-        const purchase = {
-            items: purchaseItems
-        };
 
-        axios.put(`http://localhost:8000/purchases/${id}`, purchase)
-            .then((response) => {
-                console.log(response.data);
+function handleSubmit(e) {
+    e.preventDefault();
 
-                navigate("/purchases");
-            })
-           .catch((err) => {
-    console.log(err);
+    const purchase = {
+        items: purchaseItems.map((item) => ({
+            item_id: Number(item.item_id),
+            quantity: Number(item.quantity)
+        }))
+    };
 
-    if (err.response) {
-        alert(err.response.data.message);
-    } else {
-        alert("Something went wrong");
-    }
-});
-    }
+    console.log("Purchase ID:", id);
+    console.log("Request payload:", purchase);
+
+    axios.put(`http://localhost:8000/purchases/${id}`, purchase)
+        .then((response) => {
+            console.log(response.data);
+            navigate("/purchases");
+        })
+        .catch((err) => {
+            console.log("Backend error:", err.response?.data);
+            alert(
+                err.response?.data?.message ||
+                "Failed to update purchase"
+            );
+        });
+}
 
     return (
         <div className="container">
@@ -132,35 +108,27 @@ function changeQuantity(itemId, quantity) {
                 <h1>Update Purchase</h1>
 
                 {purchaseItems.map((item) => {
+    const selectedItem = items.find(
+        (data) => data.id === Number(item.item_id)
+    );
 
-                    const selectedItem = items.find(
-                        (data) => data.id === item.item_id
-                    );
+    return (
+        <div key={item.item_id}>
+            <p>
+                {selectedItem ? selectedItem.name : "Item"}
+            </p>
 
-                    return (
-                        <div key={item.item_id}>
-
-                            <p>
-                                {selectedItem
-                                    ? selectedItem.name
-                                    : "Item"}
-                            </p>
-
-                            <input
-                                type="number"
-                                value={item.quantity}
-                                onChange={(e) => {
-                                    changeQuantity(
-                                        item.item_id,
-                                        e.target.value
-                                    );
-                                }}
-                            />
-
-                        </div>
-                    );
-                })}
-
+            <input
+                type="number"
+                min="1"
+                value={item.quantity}
+                onChange={(e) =>
+                    changeQuantity(item.item_id, e.target.value)
+                }
+            />
+        </div>
+    );
+})}
                 <button type="submit">
                     Update Purchase
                 </button>

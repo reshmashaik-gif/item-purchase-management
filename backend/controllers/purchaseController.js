@@ -148,22 +148,23 @@ const getPurchaseById = async (req, res) => {
         const { id } = req.params;
 
         const sql = `
-            SELECT
-                purchases.order_id,
-                purchases.purchase_date,
-                items.name,
-                item_types.type_name,
-                purchase_items.quantity,
-                items.stock_available
-            FROM purchases
-            JOIN purchase_items
-            ON purchases.id = purchase_items.purchase_id
-            JOIN items
-            ON purchase_items.item_id = items.id
-            JOIN item_types
-            ON items.item_type_id = item_types.id
-            WHERE purchases.id = ?
-        `;
+    SELECT
+        purchases.order_id,
+        purchases.purchase_date,
+        items.id AS item_id,
+        items.name,
+        item_types.type_name,
+        purchase_items.quantity,
+        items.stock_available
+    FROM purchases
+    JOIN purchase_items
+        ON purchases.id = purchase_items.purchase_id
+    JOIN items
+        ON purchase_items.item_id = items.id
+    JOIN item_types
+        ON items.item_type_id = item_types.id
+    WHERE purchases.id = ?
+`;
 
         const [result] = await connection.promise().query(sql, [id]);
 
